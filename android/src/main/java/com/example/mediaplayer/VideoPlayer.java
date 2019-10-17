@@ -114,10 +114,11 @@ class VideoPlayer {
         result.success(null);
     }
 
-    void setPlaylist(List<Map> dataSourceList, MethodChannel.Result result) {
+    void setPlaylist(List<Map> dataSourceList, MethodChannel.Result result) {        
         isInitialized = false;
         source = new HashMap<>();
         playlist = dataSourceList;
+        
         ConcatenatingMediaSource concatenatingMediaSource = new ConcatenatingMediaSource();
         for (int i = 0; i < playlist.size(); i++) {
             Uri uri = Uri.parse((String) playlist.get(i).get("source"));

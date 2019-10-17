@@ -185,9 +185,9 @@ public class MediaPlayerPlugin implements MethodCallHandler, ViewDestroyListener
       break;
     case "setPlaylist":
       List<Map> playlist = (List<Map>) call.argument("playlist");
-      Log.d(TAG, "Playlist=" + playlist.toString());
+      // Log.d(TAG, "Playlist=" + playlist.toString());
       player.setPlaylist(playlist, result);
-      // result.success(null);
+      result.success(null);
       break;
     case "setLooping":
       player.setLooping((Boolean) call.argument("looping"));
