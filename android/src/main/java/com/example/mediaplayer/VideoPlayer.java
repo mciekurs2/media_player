@@ -1,5 +1,6 @@
 package com.example.mediaplayer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -114,11 +115,11 @@ class VideoPlayer {
         result.success(null);
     }
 
-    void setPlaylist(List<Map> dataSourceList, MethodChannel.Result result) {        
+    void setPlaylist(List<Map> dataSourceList, MethodChannel.Result result) {
         isInitialized = false;
         source = new HashMap<>();
         playlist = dataSourceList;
-        
+
         ConcatenatingMediaSource concatenatingMediaSource = new ConcatenatingMediaSource();
         for (int i = 0; i < playlist.size(); i++) {
             Uri uri = Uri.parse((String) playlist.get(i).get("source"));
@@ -183,11 +184,21 @@ class VideoPlayer {
 
             @Override
             public void onPositionDiscontinuity(@Player.DiscontinuityReason int reason) {
-                Log.i(TAG, "position changed called" + reason);
-                if ((reason == 1 || reason == 2) && prevValue != exoPlayer.getCurrentWindowIndex()){
-                    isInitialized = false;                    
+                Log.i(TAG, String.valueOf(exoPlayer.getCurrentWindowIndex()));
+
+                if ((reason == 1 || reason == 2) && prevValue != exoPlayer.getCurrentWindowIndex()) {
+                    isInitialized = false;
                     sendInitialized();
                 }
+
+                // called when playlist changes
+                if (prevValue != exoPlayer.getCurrentWindowIndex() && isInitialized) {
+                    Map<String, Object> event = new HashMap<>();
+                    event.put("event", "playlistElementChanged");
+                    event.put("current_index", exoPlayer.getCurrentWindowIndex());
+                    eventSink.success(event);
+                }
+
             }
 
             @Override
@@ -231,6 +242,7 @@ class VideoPlayer {
         result.success(reply);
     }
 
+    @SuppressLint("WrongConstant")
     @SuppressWarnings("deprecation")
     private static void setAudioAttributes(SimpleExoPlayer exoPlayer) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -245,11 +257,11 @@ class VideoPlayer {
         exoPlayer.setPlayWhenReady(true);
     }
 
-    void retry(){
-         Log.i(TAG, "retry called");
+    void retry() {
+        Log.i(TAG, "retry called");
         exoPlayer.retry();
-        
-         Log.i(TAG, "retry called after exoplayer retry.");
+
+        Log.i(TAG, "retry called after exoplayer retry.");
         // exoPlayer.setPlayWhenReady();
     }
 

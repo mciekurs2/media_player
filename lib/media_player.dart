@@ -89,6 +89,10 @@ class MediaPlayer {
         _applyVolume();
         _applyPlayPause();
         break;
+      case 'playlistElementChanged':
+        valueNotifier.value = valueNotifier.value
+            .copyWith(currentIndex: map['current_index'] ?? 0);
+        break;
       case 'paused':
         valueNotifier.value = valueNotifier.value.copyWith(isPlaying: false);
         _timer?.cancel();
