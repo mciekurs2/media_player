@@ -335,7 +335,7 @@ class MediaPlayer {
     if (_isDisposed || !valueNotifier.value.initialized) return;
     _eventSubscription.cancel();
     _isDisposed = true;
-    _timer.cancel();
+    _timer?.cancel();
     await _channel.invokeMethod("dispose", _createArgs());
   }
 }
@@ -527,7 +527,7 @@ class _VideoAppLifeCycleObserver extends Object with WidgetsBindingObserver {
           _controller.play();
         }
         break;
-      case AppLifecycleState.suspending:
+      case AppLifecycleState.inactive:
         _controller.dispose();
         break;
       default:
